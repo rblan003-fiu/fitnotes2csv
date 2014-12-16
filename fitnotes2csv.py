@@ -10,7 +10,9 @@ def dostuff(f):
     _l = [l.strip('\n') for l in lines]
     _l = [e for e in _l if e != '']
 
-    _date = _l[0].split(' - ')[1]
+    _date = _l[0].split('day ')[1]
+    _day = _date.split(' ')[0].translate(None,'stndrh')
+    _date = _date.replace(_date.split(' ')[0], _day)
     setcounter = 0
     current_reps = 0
     current_lbs = 0
@@ -25,13 +27,13 @@ def dostuff(f):
             setcounter += 1
             try:
                 [current_lbs, current_reps] = e.lstrip('- ').split(' x ')
-            except ValueError, e:
-                [current_lbs, current_reps] = ['-2','-2']
+                #have to handle 'rep' instead of 'reps' case
+                [current_reps, notes] = [current_reps.split('rep')[0],current_reps.split('rep')[1].lstrip('s')]
+            except ValueError, err:
+                
+                [current_lbs, reps, notes] = ['0', e.split(' rep')[0], e.split(' rep')[1].lstrip('s')]
            
-            print current_reps.split('rep')[0]
-            print current_reps.split('rep')[1].lstrip('s')
-            #have to handle 'rep' instead of 'reps' case
-            [current_reps, notes] = [current_reps.split('rep')[0],current_reps.split('rep')[1].lstrip('s')]
+           
             output.append('"{0}","{1}",{2},{3},{4},"{5}"'.format(
                 _date,
                 current_exercise,
@@ -59,7 +61,6 @@ output.append('{0},{1},{2},{3},{4},{5}'.format(
 for (root, dirs, files) in os.walk(dirname):
     print 'in the dir {0}'.format(dirname)
     for f in files:
-        print 'opened file...{0}'.format(f)
         f = open('{0}/{1}'.format(dirname, f), 'r')
         print 'doing stuff on file...{0}/{1}'.format(dirname, f)
         output.extend(dostuff(f))
