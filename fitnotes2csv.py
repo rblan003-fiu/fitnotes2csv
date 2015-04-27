@@ -3,7 +3,7 @@
 import os
 
 
-def dostuff(f):
+def process_file(f):
     
     output = []
     lines = [x for x in f]
@@ -63,7 +63,7 @@ for (root, dirs, files) in os.walk(dirname):
     for f in files:
         f = open('{0}/{1}'.format(dirname, f), 'r')
         print 'doing stuff on file...{0}/{1}'.format(dirname, f)
-        output.extend(dostuff(f))
+        output.extend(process_file(f))
         f.close()
 
 f = open('FitNotes.csv', 'w')
